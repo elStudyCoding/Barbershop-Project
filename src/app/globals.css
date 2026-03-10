@@ -84,7 +84,54 @@ body {
 }
 
 .section-reveal {
-  animation: fade-up 700ms ease-out both;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.reveal-item {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.js-ready [data-reveal] {
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity 700ms ease, transform 700ms ease;
+  will-change: opacity, transform;
+}
+
+.js-ready [data-reveal="fade"] {
+  transform: none;
+}
+
+.js-ready [data-reveal="left"] {
+  transform: translateX(-22px);
+}
+
+.js-ready [data-reveal="right"] {
+  transform: translateX(22px);
+}
+
+.js-ready [data-reveal="zoom"] {
+  transform: scale(0.96);
+}
+
+.js-ready [data-reveal].is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.js-ready [data-reveal="fade"].is-visible {
+  transform: none;
+}
+
+.js-ready [data-reveal="left"].is-visible,
+.js-ready [data-reveal="right"].is-visible {
+  transform: translateX(0);
+}
+
+.js-ready [data-reveal="zoom"].is-visible {
+  transform: scale(1);
 }
 
 .animate-fade-up {

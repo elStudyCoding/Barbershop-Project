@@ -1,5 +1,5 @@
-﻿import type { Metadata } from "next";
-
+import type { Metadata } from "next";
+import ScrollReveal from "./components/ScrollReveal";
 type Location = {
   city: string;
   address: string;
@@ -125,6 +125,7 @@ export const metadata: Metadata = {
 export default function Home() {
   return (
     <div className="hero-gradient page-enter relative overflow-x-clip text-white">
+      <ScrollReveal />
       <div aria-hidden className="ambient-bg" />
       <div aria-hidden className="ambient-grid" />
       <div aria-hidden className="noise-overlay" />
@@ -152,7 +153,7 @@ export default function Home() {
             <div aria-hidden className="hero-orb hero-orb-a" />
             <div aria-hidden className="hero-orb hero-orb-b" />
 
-            <div className="relative z-10 space-y-6 animate-fade-up">
+            <div data-reveal="up" className="relative z-10 space-y-6 animate-fade-up">
               <p className="inline-flex rounded-full border border-rose-200/45 bg-rose-100/10 px-4 py-1 text-sm text-rose-50">
                 Modern Grooming Agency
               </p>
@@ -175,8 +176,13 @@ export default function Home() {
               </div>
 
               <div className="mt-2 grid gap-3 sm:grid-cols-3">
-                {highlights.map((item) => (
-                  <div key={item.label} className="stat-card rounded-xl border border-white/25 bg-white/8 px-4 py-3">
+                {highlights.map((item, index) => (
+                  <div
+                    key={item.label}
+                    data-reveal="up"
+                    className="stat-card rounded-xl border border-white/25 bg-white/8 px-4 py-3"
+                    style={{ transitionDelay: `${index * 90}ms` }}
+                  >
                     <p className="text-xl font-semibold text-white">{item.value}</p>
                     <p className="text-xs text-rose-50/80">{item.label}</p>
                   </div>
@@ -184,14 +190,14 @@ export default function Home() {
               </div>
             </div>
 
-            <div className="hero-panel interactive-card relative z-10 overflow-hidden rounded-3xl border border-white/20 bg-[#4a0d1c]/55 p-8 shadow-2xl shadow-black/30 animate-fade-up delay-1">
+            <div data-reveal="zoom" className="hero-panel interactive-card relative z-10 overflow-hidden rounded-3xl border border-white/20 bg-[#4a0d1c]/55 p-8 shadow-2xl shadow-black/30 animate-fade-up delay-1">
               <div className="absolute -right-16 -top-14 h-48 w-48 rounded-full bg-rose-300/30 blur-2xl animate-float-slow" />
               <h2 className="title-shine text-2xl font-semibold text-white">Agency Standard Experience</h2>
               <ul className="mt-5 space-y-4 text-sm leading-6 text-rose-50/90 sm:text-base">
-                <li>• SOP pelayanan cepat dan konsisten.</li>
-                <li>• Konsultasi model sesuai karakter klien.</li>
-                <li>• Peralatan steril di setiap sesi.</li>
-                <li>• Suasana premium tanpa ribet.</li>
+                <li>- SOP pelayanan cepat dan konsisten.</li>
+                <li>- Konsultasi model sesuai karakter klien.</li>
+                <li>- Peralatan steril di setiap sesi.</li>
+                <li>- Suasana premium tanpa ribet.</li>
               </ul>
               <div className="mt-6 flex flex-wrap gap-3 text-xs">
                 <span className="chip">Steril Tools</span>
@@ -202,7 +208,7 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="marquee-shell border-y border-white/15 bg-[#3a0a15]/55 py-4">
+        <section data-reveal="up" className="marquee-shell border-y border-white/15 bg-[#3a0a15]/55 py-4">
           <div className="marquee-track">
             {[...services, ...services].map((service, index) => (
               <span key={`${service}-${index}`} className="marquee-item">
@@ -212,14 +218,14 @@ export default function Home() {
           </div>
         </section>
 
-        <section id="services" className="mx-auto w-full max-w-6xl px-5 py-20 sm:px-8 section-reveal">
+        <section id="services" data-reveal="up" className="mx-auto w-full max-w-6xl px-5 py-20 sm:px-8 section-reveal">
           <h2 className="title-shine text-3xl font-semibold text-white sm:text-4xl">Services & Pricing</h2>
           <p className="mt-4 max-w-2xl text-rose-50/85">
             Harga berikut disesuaikan dari price list yang kamu kirim.
           </p>
           <div className="mt-10 grid gap-6 md:grid-cols-3">
             {priceSections.map((section) => (
-              <article key={section.title} className="interactive-card rounded-2xl border border-rose-100/25 bg-[#4a0d1c]/55 p-6">
+              <article key={section.title} data-reveal="up" className="interactive-card rounded-2xl border border-rose-100/25 bg-[#4a0d1c]/55 p-6">
                 <h3 className="text-xl font-semibold">{section.title}</h3>
                 <div className="mt-4 space-y-3">
                   {section.items.map((item) => (
@@ -234,7 +240,7 @@ export default function Home() {
           </div>
         </section>
 
-        <section id="about" className="border-y border-white/15 bg-[#2a0810]/60 section-reveal">
+        <section id="about" data-reveal="up" className="border-y border-white/15 bg-[#2a0810]/60 section-reveal">
           <div className="mx-auto w-full max-w-6xl px-5 py-20 sm:px-8">
             <h2 className="title-shine text-3xl font-semibold text-white sm:text-4xl">About Al Sunnah</h2>
             <p className="mt-6 max-w-4xl text-base leading-8 text-rose-50/85 sm:text-lg">
@@ -245,11 +251,16 @@ export default function Home() {
           </div>
         </section>
 
-        <section id="locations" className="mx-auto w-full max-w-6xl px-5 py-20 sm:px-8 section-reveal">
+        <section id="locations" data-reveal="up" className="mx-auto w-full max-w-6xl px-5 py-20 sm:px-8 section-reveal">
           <h2 className="title-shine text-3xl font-semibold text-white sm:text-4xl">Location & Contact</h2>
           <div className="mt-10 grid gap-6 md:grid-cols-1">
             {locations.map((location, index) => (
-              <article key={location.city} className="interactive-card animate-fade-up rounded-2xl border border-rose-100/25 bg-[#4a0d1c]/55 p-6 shadow-lg shadow-black/25" style={{ animationDelay: `${index * 120}ms` }}>
+              <article
+                key={location.city}
+                data-reveal="fade"
+                className="interactive-card reveal-item rounded-2xl border border-rose-100/25 bg-[#4a0d1c]/55 p-6 shadow-lg shadow-black/25"
+                style={{ transitionDelay: `${index * 120}ms` }}
+              >
                 <h3 className="text-xl font-semibold">{location.city}</h3>
                 <div className="map-zoom mt-4 overflow-hidden rounded-xl border border-white/10">
                   <iframe
@@ -276,7 +287,7 @@ export default function Home() {
           </div>
         </section>
 
-        <section id="barbers" className="border-t border-white/15 bg-[#2a0810]/60 section-reveal">
+        <section id="barbers" data-reveal="up" className="border-t border-white/15 bg-[#2a0810]/60 section-reveal">
           <div className="mx-auto w-full max-w-6xl px-5 py-20 sm:px-8">
             <h2 className="title-shine text-3xl font-semibold text-white sm:text-4xl">Kapster On Duty</h2>
             <div className="mt-10 grid gap-8 lg:grid-cols-2">
@@ -287,7 +298,12 @@ export default function Home() {
                     {barbers
                       .filter((barber) => barber.location === location.city)
                       .map((barber, index) => (
-                        <article key={barber.name} className="interactive-card animate-fade-up rounded-2xl border border-rose-100/25 bg-[#4a0d1c]/55 p-5" style={{ animationDelay: `${index * 120}ms` }}>
+                        <article
+                          key={barber.name}
+                          data-reveal={index % 2 === 0 ? "up" : "zoom"}
+                          className="interactive-card reveal-item rounded-2xl border border-rose-100/25 bg-[#4a0d1c]/55 p-5"
+                          style={{ transitionDelay: `${index * 120}ms` }}
+                        >
                           <h3 className="text-lg font-semibold text-white">{barber.name}</h3>
                           <p className="mt-2 text-sm text-rose-50/85">{barber.specialty}</p>
                           <p className="mt-4 inline-flex rounded-full border border-rose-200/50 px-3 py-1 text-xs text-rose-50">
@@ -302,8 +318,8 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="mx-auto w-full max-w-6xl px-5 py-20 sm:px-8 section-reveal">
-          <div className="rounded-3xl border border-rose-100/30 bg-[#4a0d1c]/55 p-8 sm:p-10">
+        <section data-reveal="up" className="mx-auto w-full max-w-6xl px-5 py-20 sm:px-8 section-reveal">
+          <div data-reveal="zoom" className="rounded-3xl border border-rose-100/30 bg-[#4a0d1c]/55 p-8 sm:p-10">
             <p className="text-sm uppercase tracking-[0.2em] text-rose-100/90">Client Feedback</p>
             <p className="mt-4 max-w-3xl text-lg leading-8 text-rose-50/90 sm:text-2xl">
               &quot;Pelayanan cepat, kapster komunikatif, hasil potongannya konsisten. Vibe
@@ -314,13 +330,13 @@ export default function Home() {
         </section>
       </main>
 
-      <footer id="contact" className="border-t border-rose-200/30 bg-[#24070e] section-reveal">
+      <footer id="contact" data-reveal="up" className="border-t border-rose-200/30 bg-[#24070e] section-reveal">
         <div className="mx-auto grid w-full max-w-6xl gap-8 px-5 py-10 text-sm text-rose-50/85 sm:px-8 md:grid-cols-3">
-          <div>
+          <div data-reveal="left">
             <p className="text-base font-semibold tracking-[0.18em] text-white">AL SUNNAH</p>
             <p className="mt-2">Cukur rapi, pelayanan sepenuh hati.</p>
           </div>
-          <div>
+          <div data-reveal="up">
             <h3 className="text-base font-semibold text-white">Navigasi</h3>
             <ul className="mt-3 space-y-2">
               <li><a className="hover:text-white" href="#hero">Home</a></li>
@@ -330,7 +346,7 @@ export default function Home() {
               <li><a className="hover:text-white" href="#barbers">Kapster</a></li>
             </ul>
           </div>
-          <div>
+          <div data-reveal="right">
             <h3 className="text-base font-semibold text-white">Contacts</h3>
             <div className="mt-3 space-y-2">
               <p>WhatsApp: +62 813-9000-1212</p>
@@ -347,3 +363,18 @@ export default function Home() {
     </div>
   );
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -23,6 +23,7 @@
 # misc
 .DS_Store
 *.pem
+/data/bookings.json
 
 # debug
 npm-debug.log*
