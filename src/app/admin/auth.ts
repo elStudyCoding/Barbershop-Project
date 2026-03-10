@@ -7,7 +7,7 @@ const COOKIE_NAME = "admin_auth";
 const COOKIE_VALUE = "1";
 
 export async function requireAdmin() {
-  const cookieStore = cookies();
+  const cookieStore = await cookies();
   const isAuthed = cookieStore.get(COOKIE_NAME)?.value === COOKIE_VALUE;
 
   if (!isAuthed) {

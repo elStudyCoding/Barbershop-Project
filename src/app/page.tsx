@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import ScrollReveal from "./components/ScrollReveal";
+import { createPublicBooking } from "./actions";
+import { getBarbers } from "./admin/data";
 type Location = {
   city: string;
   address: string;
@@ -80,7 +82,7 @@ const highlights = [
   { label: "Cabang Aktif", value: "2 Lokasi" },
 ];
 
-const services = ["Fade Cut", "Classic Cut", "Beard Trim", "Hot Towel Shave", "Hair Styling", "Kids Cut"];
+const services = ["Haircut", "Haircolor", "Hair Treatment"];
 
 const priceSections = [
   {
@@ -122,7 +124,17 @@ export const metadata: Metadata = {
   description: "Landing page Al Sunnah Barbershop Probolinggo",
 };
 
-export default function Home() {
+type HomeProps = {
+  searchParams?: {
+    success?: string;
+    error?: string;
+  };
+};
+
+export default async function Home({ searchParams }: HomeProps) {
+  const adminBarbers = await getBarbers();
+  const bookingSuccess = searchParams?.success === "1";
+  const bookingError = searchParams?.error;
   return (
     <div className="hero-gradient page-enter relative overflow-x-clip text-white">
       <ScrollReveal />
@@ -141,7 +153,7 @@ export default function Home() {
             <li><a className="hover:text-rose-100 nav-link" href="#locations">Location</a></li>
             <li><a className="hover:text-rose-100 nav-link" href="#barbers">Kapster</a></li>
             <li><a className="hover:text-rose-100 nav-link" href="/admin/login">Admin</a></li>
-            <li><a className="rounded-full border border-rose-200/70 px-4 py-2 text-rose-50 hover:bg-rose-100/10 nav-link" href="#contact">Book</a></li>
+            <li><a className="rounded-full border border-rose-200/70 px-4 py-2 text-rose-50 hover:bg-rose-100/10 nav-link" href="#booking">Book</a></li>
           </ul>
         </nav>
       </header>
@@ -168,7 +180,7 @@ export default function Home() {
               </p>
 
               <div className="flex flex-wrap gap-4">
-                <a href="#contact" className="btn-wow rounded-full px-6 py-3 text-sm font-semibold text-[#5c0f21]">
+                <a href="#booking" className="btn-wow rounded-full px-6 py-3 text-sm font-semibold text-[#5c0f21]">
                   Booking Sekarang
                 </a>
                 <a href="#services" className="btn-ghost rounded-full border border-white/50 px-6 py-3 text-sm font-semibold text-white hover:border-rose-100 hover:text-rose-100">
@@ -330,6 +342,140 @@ export default function Home() {
               tempatnya premium tapi tetap nyaman.&quot;
             </p>
             <p className="mt-4 text-sm text-rose-100/80">- Pelanggan Google Maps</p>
+          </div>
+        </section>
+
+        <section id="booking" data-reveal="up" className="mx-auto w-full max-w-6xl px-5 py-20 sm:px-8 section-reveal">
+          <div className="grid gap-8 lg:grid-cols-[1.05fr_0.95fr]">
+            <div>
+              <p className="text-sm uppercase tracking-[0.2em] text-rose-100/90">Booking</p>
+              <h2 className="title-shine mt-4 text-3xl font-semibold text-white sm:text-4xl">Booking Langsung</h2>
+              <p className="mt-4 max-w-2xl text-base leading-7 text-rose-50/85 sm:text-lg">
+                Isi form untuk booking. Data kamu akan otomatis masuk ke dashboard admin.
+              </p>
+              {bookingSuccess ? (
+                <div className="mt-6 rounded-2xl border border-emerald-200/40 bg-emerald-200/10 px-4 py-3 text-sm text-emerald-100">
+                  Booking berhasil dikirim. Kami akan konfirmasi lewat WhatsApp.
+                </div>
+              ) : null}
+              {bookingError === "field" ? (
+                <div className="mt-6 rounded-2xl border border-rose-200/40 bg-rose-200/10 px-4 py-3 text-sm text-rose-100">
+                  Form belum lengkap. Mohon isi semua field.
+                </div>
+              ) : null}
+              {bookingError === "rate" ? (
+                <div className="mt-6 rounded-2xl border border-rose-200/40 bg-rose-200/10 px-4 py-3 text-sm text-rose-100">
+                  Terlalu banyak request. Coba lagi sebentar.
+                </div>
+              ) : null}
+            </div>
+
+            <form action={createPublicBooking} className="rounded-3xl border border-rose-100/30 bg-[#4a0d1c]/55 p-6">
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div className="grid gap-2">
+                  <label className="text-xs uppercase tracking-[0.2em] text-rose-100/70">Nama</label>
+                  <input
+                    name="name"
+                    placeholder="Nama lengkap"
+                    className="h-11 w-full rounded-xl border border-white/10 bg-[#18050b] px-4 text-sm text-white outline-none focus:border-rose-200/50"
+                    required
+                  />
+                </div>
+                <div className="grid gap-2">
+                  <label className="text-xs uppercase tracking-[0.2em] text-rose-100/70">WhatsApp</label>
+                  <input
+                    name="phone"
+                    placeholder="+62..."
+                    className="h-11 w-full rounded-xl border border-white/10 bg-[#18050b] px-4 text-sm text-white outline-none focus:border-rose-200/50"
+                    required
+                  />
+                </div>
+              </div>
+              <div className="mt-4 grid gap-4 sm:grid-cols-2">
+                <div className="grid gap-2">
+                  <label className="text-xs uppercase tracking-[0.2em] text-rose-100/70">Layanan</label>
+                  <select
+                    name="service"
+                    className="h-11 w-full rounded-xl border border-white/10 bg-[#18050b] px-4 text-sm text-white outline-none focus:border-rose-200/50"
+                    defaultValue=""
+                    required
+                  >
+                    <option value="" disabled>
+                      Pilih layanan
+                    </option>
+                    {services.map((service) => (
+                      <option key={service} value={service}>
+                        {service}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div className="grid gap-2">
+                  <label className="text-xs uppercase tracking-[0.2em] text-rose-100/70">Kapster</label>
+                  <select
+                    name="barber"
+                    className="h-11 w-full rounded-xl border border-white/10 bg-[#18050b] px-4 text-sm text-white outline-none focus:border-rose-200/50"
+                    defaultValue=""
+                    required
+                  >
+                    <option value="" disabled>
+                      Pilih kapster
+                    </option>
+                    {adminBarbers.map((barber) => (
+                      <option key={barber.id} value={barber.name}>
+                        {barber.name} - {barber.location}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+              <div className="mt-4 grid gap-4 sm:grid-cols-2">
+                <div className="grid gap-2">
+                  <label className="text-xs uppercase tracking-[0.2em] text-rose-100/70">Lokasi</label>
+                  <select
+                    name="location"
+                    className="h-11 w-full rounded-xl border border-white/10 bg-[#18050b] px-4 text-sm text-white outline-none focus:border-rose-200/50"
+                    defaultValue=""
+                    required
+                  >
+                    <option value="" disabled>
+                      Pilih lokasi
+                    </option>
+                    {locations.map((location) => (
+                      <option key={location.city} value={location.city}>
+                        {location.city}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <div className="grid gap-2">
+                    <label className="text-xs uppercase tracking-[0.2em] text-rose-100/70">Tanggal</label>
+                    <input
+                      type="date"
+                      name="date"
+                      className="h-11 w-full rounded-xl border border-white/10 bg-[#18050b] px-4 text-sm text-white outline-none focus:border-rose-200/50"
+                      required
+                    />
+                  </div>
+                  <div className="grid gap-2">
+                    <label className="text-xs uppercase tracking-[0.2em] text-rose-100/70">Jam</label>
+                    <input
+                      type="time"
+                      name="time"
+                      className="h-11 w-full rounded-xl border border-white/10 bg-[#18050b] px-4 text-sm text-white outline-none focus:border-rose-200/50"
+                      required
+                    />
+                  </div>
+                </div>
+              </div>
+              <button
+                type="submit"
+                className="mt-6 h-11 w-full rounded-full bg-rose-100 text-sm font-semibold text-[#2a0810] hover:bg-white"
+              >
+                Kirim Booking
+              </button>
+            </form>
           </div>
         </section>
       </main>

@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { headers } from "next/headers";
-import { addBooking, removeBooking, updateBookingStatus } from "./data";
+import { addBarber, addBooking, removeBarber, removeBooking, updateBarber, updateBookingStatus } from "./data";
 
 function normalizeText(value: FormDataEntryValue | null, limit = 120) {
   if (typeof value !== "string") {
@@ -43,8 +43,8 @@ function isRateLimited(ip: string) {
   return false;
 }
 
-function getIp() {
-  const headerStore = headers();
+async function getIp() {
+  const headerStore = await headers();
   const forwarded = headerStore.get("x-forwarded-for");
   if (forwarded) {
     return forwarded.split(",")[0]?.trim() || "unknown";
@@ -53,26 +53,28 @@ function getIp() {
 }
 
 export async function createBooking(formData: FormData) {
-  const ip = getIp();
+  const ip = await getIp();
   if (isRateLimited(ip)) {
     return;
   }
   const name = normalizeText(formData.get("name"), 80);
   const phone = normalizeText(formData.get("phone"), 32);
   const service = normalizeText(formData.get("service"), 60);
+  const barber = normalizeText(formData.get("barber"), 60);
+  const location = normalizeText(formData.get("location"), 80);
   const date = normalizeDate(formData.get("date"));
   const time = normalizeTime(formData.get("time"));
 
-  if (!name || !phone || !service || !date || !time) {
+  if (!name || !phone || !service || !barber || !location || !date || !time) {
     return;
   }
 
-  await addBooking({ name, phone, service, date, time });
+  await addBooking({ name, phone, service, barber, location, date, time });
   revalidatePath("/admin");
 }
 
 export async function setBookingStatus(formData: FormData) {
-  const ip = getIp();
+  const ip = await getIp();
   if (isRateLimited(ip)) {
     return;
   }
@@ -90,7 +92,7 @@ export async function setBookingStatus(formData: FormData) {
 }
 
 export async function deleteBooking(formData: FormData) {
-  const ip = getIp();
+  const ip = await getIp();
   if (isRateLimited(ip)) {
     return;
   }
@@ -100,5 +102,55 @@ export async function deleteBooking(formData: FormData) {
   }
 
   await removeBooking(id);
+  revalidatePath("/admin");
+}
+
+export async function createBarber(formData: FormData) {
+  const ip = await getIp();
+  if (isRateLimited(ip)) {
+    return;
+  }
+
+  const name = normalizeText(formData.get("barber_name"), 80);
+  const location = normalizeText(formData.get("barber_location"), 80);
+
+  if (!name || !location) {
+    return;
+  }
+
+  await addBarber({ name, location });
+  revalidatePath("/admin");
+}
+
+export async function editBarber(formData: FormData) {
+  const ip = await getIp();
+  if (isRateLimited(ip)) {
+    return;
+  }
+
+  const id = normalizeText(formData.get("barber_id"), 16);
+  const name = normalizeText(formData.get("barber_name"), 80);
+  const location = normalizeText(formData.get("barber_location"), 80);
+
+  if (!id || !name || !location) {
+    return;
+  }
+
+  await updateBarber(id, { name, location });
+  revalidatePath("/admin");
+}
+
+export async function deleteBarber(formData: FormData) {
+  const ip = await getIp();
+  if (isRateLimited(ip)) {
+    return;
+  }
+
+  const id = normalizeText(formData.get("barber_id"), 16);
+  if (!id) {
+    return;
+  }
+
+  await removeBarber(id);
   revalidatePath("/admin");
 }
